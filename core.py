@@ -7,6 +7,7 @@ import logging, string
 try:
 	# Pyodide
 	from js import window, eval as jseval
+	from pyodide import create_proxy
 	document = window.document
 
 except:
@@ -292,7 +293,7 @@ class Widget(object):
 			if event_attrName in self._catchedEvents or event in ["onattach", "ondetach"]:
 				continue
 
-			eventFn = getattr(self, event_attrName, None)
+			eventFn = create_proxy(getattr(self, event_attrName, None))
 			assert eventFn and callable(eventFn), "{} must provide a {} method".format(str(self), event_attrName)
 
 			self._catchedEvents[event_attrName] = eventFn
